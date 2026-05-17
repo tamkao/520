@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>520 快乐 ❤️</title>
+    <style>
+        /* 基础样式与渐变背景 */
+        body {
+            margin: 0; padding: 0; height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            background-color: #fecfef;
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow: hidden; gap: 20px;
+        }
+
+        /* 纯 CSS 绘制的跳动大爱心 */
+        .heart {
+            position: relative; width: 100px; height: 90px;
+            animation: beat 1s infinite alternate;
+            z-index: 20; cursor: pointer;
+            transition: transform 1.5s ease;
+        }
+        .heart::before, .heart::after {
+            content: ""; position: absolute; top: 0; width: 50px; height: 80px;
+            background: #ff4b4b; border-radius: 50px 50px 0 0;
+            box-shadow: 0 0 30px rgba(255, 75, 75, 0.6);
+        }
+        .heart::before { left: 50px; transform: rotate(-45deg); transform-origin: 0 100%; }
+        .heart::after { left: 0; transform: rotate(45deg); transform-origin: 100% 100%; }
+        @keyframes beat { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
+
+        /* ======== 命运的红线大屏动画特效 ======== */
+        #red-thread-container {
+            position: fixed; top: 50%; left: 0; width: 100vw; height: 200px;
+            transform: translateY(-50%);
+            z-index: 100; display: none; pointer-events: none; 
+        }
+        #thread-path {
+            fill: none; stroke: #ff4b4b; stroke-width: 4;
+            filter: drop-shadow(0 0 12px rgba(255, 75, 75, 0.9)); 
+            stroke-dasharray: 1500; stroke-dashoffset: 1500;
+        }
+        .draw-anim {
+            animation: drawThread 6s ease-in-out forwards;
+        }
+        @keyframes drawThread {
+            0% { stroke-dashoffset: 1500; opacity: 0; }
+            10% { opacity: 1; }
+            50% { stroke-dashoffset: 0; opacity: 1; } 
+            70% { opacity: 1; stroke-dashoffset: 0; } 
+            100% { opacity: 0; stroke-dashoffset: 0; } 
+        }
+
+        /* 隐藏的惊喜包裹（包含兔子和文字框） */
+        #reveal-area {
+            display: none; 
+            flex-direction: column; align-items: center; gap: 25px;
+            width: 100%; z-index: 10;
+        }
+
+        /* 中间兔子的对跑动画区 */
+        #character-animation-container {
+            position: relative; width: 290px; height: 175px;
+            overflow: visible; 
+        }
+
+        .character {
+            position: absolute; top: 0; width: 50%; height: 120%;
+            background-image: url('img/image_11.png'); 
+            background-size: 200% 100%; 
+            background-repeat: no-repeat;
+            background-position-y: center;
+            mix-blend-mode: multiply; 
+            opacity: 0;
+        }
+
+        /* ======== 兔子相遇的过渡效果 ======== */
+        #char-left {
+            left: -100vw; background-position-x: left;
+            transition: left 3s ease-out, opacity 1.5s;
+        }
+        #char-right {
+            right: -100vw; background-position-x: right;
+            transition: right 2.5s ease-out, opacity 1.5s;
+        }
+        #char-left.active { left: 0; opacity: 1; }
+        #char-right.active { right: 0; opacity: 1; }
+
+        /* 底部文字框 */
+        .message-box {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 15px 35px; border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(255, 154, 158, 0.3);
+            backdrop-filter: blur(8px); text-align: center;
+            max-width: 80%;
+            opacity: 0; 
+            transform: translateY(10px);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+            min-height: 25px; 
+        }
+        .message-box.active {
+            opacity: 1; 
+            transform: translateY(0);
+        }
+        .typing-text {
+            font-size: 1.6rem; color: #d6336c; font-weight: bold;
+            line-height: 1.5; white-space: nowrap;
+        }
+
+        /* 漫天飞舞的小心心 */
+        .floating-heart {
+            position: absolute; top: 0; z-index: 1; pointer-events: none; 
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* =========================================================
+           信封动画特效
+           ========================================================= */
+        #letter-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255, 255, 255, 0.5); display: none; 
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(8px); z-index: 1000;
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+        #letter-overlay.active { opacity: 1; }
+
+        /* 信封主体容器 */
+        #envelope-anim {
+            position: absolute;
+            width: 300px; height: 200px;
+            z-index: 10;
+            transition: opacity 1s ease, transform 1s ease; 
+        }
+
+        /* 信封背面 (紫灰色边框 + 白色底) */
+        .env-back {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff;
+            border: 5px dashed #bba4b9;
+            border-radius: 8px;
+            box-sizing: border-box;
+            z-index: 1;
+        }
+
+        /* 里面的信纸 (初始状态藏在信封里) */
+        .env-paper {
+            position: absolute; top: 10px; left: 15px; right: 15px; bottom: 10px;
+            background: #fff;
+            border: 1px solid #f2e8e8; border-radius: 4px;
+            z-index: 2;
+            /* 【修改】增加抽出动画的时长，并推迟开始时间，确保盖子完全打开后再丝滑抽出 */
+            transition: transform 2s ease-in-out 1.2s; 
+        }
+
+        /* 信封正面的下半部分遮挡 */
+        .env-front {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 60%;
+            background: #fff;
+            border: 5px dashed #bba4b9;
+            border-top: none; 
+            border-radius: 0 0 8px 8px;
+            box-sizing: border-box;
+            z-index: 3;
+            clip-path: polygon(0 100%, 50% 0, 100% 100%); 
+            transform: scale(1.02); 
+        }
+        
+        /* 左右两侧的白色遮挡 */
+        .env-front-left {
+            position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: #fff;
+            clip-path: polygon(0 0, 100% 50%, 0 100%); z-index: 3;
+            border-left: 5px dashed #bba4b9; box-sizing: border-box; border-radius: 8px 0 0 8px;
+        }
+        .env-front-right {
+            position: absolute; top: 0; right: 0; width: 50%; height: 100%; background: #fff;
+            clip-path: polygon(100% 0, 0 50%, 100% 100%); z-index: 3;
+            border-right: 5px dashed #bba4b9; box-sizing: border-box; border-radius: 0 8px 8px 0;
+        }
+
+        /* 信封上翻盖 */
+        .env-flap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 55%;
+            background: #fff;
+            border-top: 5px dashed #bba4b9;
+            border-bottom: none; 
+            border-radius: 8px 8px 0 0;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: top;
+            z-index: 4;
+            /* 【修改】翻盖变得更慢（2s），并且使用 ease-in-out 让动作更平滑；z-index 等到翻盖翻到一半（1s时）再切换，消除闪烁卡顿感 */
+            transition: transform 2s ease-in-out, z-index 0s 1s; 
+            box-sizing: border-box;
+        }
+
+        /* 纯 CSS 规则爱心印章 */
+        .env-seal {
+            position: absolute; bottom: 0px; left: 50%; 
+            margin-left: -15px; /* 让爱心居中 */
+            width: 30px; height: 30px;
+            background: #ffb6c1; 
+            transform: rotate(-45deg);
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); 
+            z-index: 10;
+        }
+        .env-seal::before, .env-seal::after {
+            content: ""; position: absolute; width: 30px; height: 30px;
+            background: #ffb6c1; border-radius: 50%;
+        }
+        .env-seal::before { top: -15px; left: 0; }
+        .env-seal::after { top: 0; left: 15px; }
+
+        /* 触发开启动画时的类名 */
+        #envelope-anim.open .env-flap {
+            transform: rotateX(180deg);
+            z-index: 0; 
+        }
+        #envelope-anim.open .env-paper {
+            transform: translateY(-90px); 
+        }
+
+        /* 详细的信件内容区 */
+        #detailed-letter {
+            position: absolute;
+            width: 85%; max-width: 500px; height: 75%; max-height: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(255, 154, 158, 0.4);
+            padding: 30px;
+            display: none; 
+            flex-direction: column;
+            opacity: 0; transform: scale(0.8);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .letter-title { font-size: 1.6rem; color: #d6336c; font-weight: bold; margin: 0 0 15px 0; }
+        .letter-body {
+            font-size: 1.05rem; color: #444; line-height: 1.8;
+            overflow-y: auto; flex-grow: 1; padding-right: 10px; padding-bottom: 20px;
+        }
+        /* 滚动条美化 */
+        .letter-body::-webkit-scrollbar { width: 4px; }
+        .letter-body::-webkit-scrollbar-thumb { background-color: #ff9a9e; border-radius: 10px; }
+        
+        .letter-body p { margin-top: 0; margin-bottom: 15px; text-indent: 2em; }
+        .letter-signature { text-align: right; margin-top: 30px; font-weight: bold; color: #d6336c; line-height: 1.6; }
+
+        /* 关闭按钮 */
+        #close-letter {
+            position: absolute; top: 20px; right: 20px;
+            font-size: 2.5rem; color: #ff4b4b; background: none; border: none; cursor: pointer; z-index: 1010;
+        }
+
+        /* =========================================================
+           纯黑屏烟花画布容器样式
+           ========================================================= */
+        #fireworks-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000;
+            z-index: 9999; 
+            opacity: 0;
+            transition: opacity 1.5s ease; 
+            display: none;
+            cursor: pointer; 
+        }
+        #fireworks-canvas.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="heart" id="heart" title="点我一下有惊喜哦~"></div>
+    
+    <div id="red-thread-container">
+        <svg viewBox="0 0 1000 200" preserveAspectRatio="none" style="width:100%; height:100%;">
+            <path id="thread-path" d="M 0,100 C 250,250 750,-50 1000,100" />
+        </svg>
+    </div>
+
+    <div id="reveal-area">
+        <div id="character-animation-container">
+            <div id="char-left" class="character"></div>
+            <div id="char-right" class="character"></div>
+        </div>
+        <div class="message-box" id="msg-box">
+            <div class="typing-text" id="type-text"></div>
+        </div>
+    </div>
+
+    <div id="letter-overlay">
+        <div id="envelope-anim">
+            <div class="env-back"></div>
+            <div class="env-paper"></div>
+            <div class="env-front-left"></div>
+            <div class="env-front-right"></div>
+            <div class="env-front"></div>
+            <div class="env-flap">
+                <div class="env-seal"></div>
+            </div>
+        </div>
+
+        <div id="detailed-letter">
+            <h2 class="letter-title">To:亲爱的周周</h2>
+            <div class="letter-body">
+                <div id="letter-content-container"></div>
+            </div>
+        </div>
+
+        <button id="close-letter">×</button>
+    </div>
+
+    <canvas id="fireworks-canvas"></canvas>
+
+    <script>
+        // 1. 漫天飘心特效
+        let floatInterval = setInterval(function() {
+            const h = document.createElement("div");
+            h.className = "floating-heart";
+            h.innerHTML = "❤"; 
+            h.style.left = Math.random() * 100 + "vw";
+            h.style.color = "rgba(255, 75, 75, 0.4)";
+            h.style.fontSize = (Math.random() * 15 + 10) + "px";
+            const duration = Math.random() * 30 + 25;
+            h.style.animation = `floatUp ${duration}s linear forwards`;
+            document.body.appendChild(h);
+            setTimeout(function() { h.remove(); }, 56000);
+        }, 300); 
+
+        // 2. 底部短句打字机特效
+        const textToType = "我们的第一个520₍ᐢ..ᐢ₎♡";
+        let typeIndex = 0;
+        function typeWriter() {
+            if (typeIndex < textToType.length) {
+                document.getElementById('type-text').innerHTML += textToType.charAt(typeIndex);
+                typeIndex++;
+                setTimeout(typeWriter, 250); 
+            }
+        }
+
+        // 3. 信件正文长文打字机配置区
+        const letterLines = [
+            "今天是26年的5月20日，是我们一起度过的第一个520！我想借着这个特别的日子，把一直藏在心里的话和你说说。",
+            "其实，在最开始的时候，我对你更多的是一种仰慕。那时候的我，总忍不住想要向着你的方向靠近，一次次被你做的那些温暖的小事所打动。你对待身边人的那份真诚和细心，总能在不经意间戳中我。也许连你自己都没发觉，你认真时的样子，还有你不经意间流露出的温柔，都让我觉得无比踏实。久而久之，我的心便在不知不觉中彻底沦陷了。",
+            "现在的我，常常会不经意间想起你说话的语气，想起你笑起来时眼角的弧度，还有你偶尔疲惫时微皱的眉头。我开始不自觉地在人群中寻找你的身影，似乎光是见到你，我的心情就能莫名变得很好。你的笑容就像阳光一样，总能驱散我所有的阴霾；我好像也变成了一个容易满足的人，哪怕只是和你简单地闲聊几句，或者一次偶然的对视，那份欢喜都会在我心底停留很久，甚至成为我一整天的动力。",
+            "这种特别的感觉，唯独在你身上才会有。是你给我的世界带来了不一样的色彩，以前总觉得平淡的日子有些枯燥，但因为有你，连那些再普通不过的瞬间，都变得闪闪发光。这些细碎的日常片段，一点点拼凑成了我日复一日的欢喜与惦念。能和你在一起，是我从前不敢去想的，一切美好得就像做梦一样。",
+            "我真的很幸运能遇到你。你就像一份珍贵的礼物，出现在我的生命里。是心跳不止，是无可替代；是你让我对生活有了更多的期待，也是你让我在偶尔感到孤独的世界里，拥有了最温暖的色彩。在我遇到烦恼或者心情低落的时候，只要想到有你，好像就有了面对一切的勇气，这是你给我的独一无二的安全感。",
+            "未来的日子里，我愿与你携手同行。不管是分享日常的碎碎念，还是去探索更多未知的风景，我都希望能和你并肩作伴。我想一直陪着你，陪你走向更大的世界，看着你绽放更耀眼的光芒。",
+            "真诚地，谢谢你的存在。",
+            "我喜欢你，周天铭(>ω<)/♡"
+        ];
+
+        let letterTypeState = {
+            pIndex: 0, charIndex: 0, isTyping: false, isFinished: false, timer: null
+        };
+
+        function typeLetterText() {
+            if (letterTypeState.isFinished) return;
+            const container = document.getElementById('letter-content-container');
+            const letterBodyWrap = document.querySelector('.letter-body');
+            
+            if (letterTypeState.pIndex < letterLines.length) {
+                let currentP = document.getElementById(`letter-p-${letterTypeState.pIndex}`);
+                if (!currentP) {
+                    currentP = document.createElement('p');
+                    currentP.id = `letter-p-${letterTypeState.pIndex}`;
+                    container.appendChild(currentP);
+                }
+                
+                const fullText = letterLines[letterTypeState.pIndex];
+                if (letterTypeState.charIndex < fullText.length) {
+                    currentP.innerHTML += fullText.charAt(letterTypeState.charIndex);
+                    letterTypeState.charIndex++;
+                    letterBodyWrap.scrollTop = letterBodyWrap.scrollHeight;
+                    letterTypeState.timer = setTimeout(typeLetterText, 60); 
+                } else {
+                    letterTypeState.pIndex++;
+                    letterTypeState.charIndex = 0;
+                    letterTypeState.timer = setTimeout(typeLetterText, 400); 
+                }
+            } else {
+                let sig = document.createElement('div');
+                sig.className = 'letter-signature';
+                sig.innerHTML = 'From：芋圆♡<br>2026.5.20';
+                sig.style.opacity = '0';
+                sig.style.transition = 'opacity 1.5s ease';
+                container.appendChild(sig);
+                letterBodyWrap.scrollTop = letterBodyWrap.scrollHeight;
+                requestAnimationFrame(() => { sig.style.opacity = '1'; });
+                letterTypeState.isFinished = true;
+                letterTypeState.isTyping = false;
+            }
+        }
+
+        function finishLetterTypingInstantly() {
+            if(letterTypeState.isFinished) return;
+            clearTimeout(letterTypeState.timer);
+            letterTypeState.isFinished = true;
+            letterTypeState.isTyping = false;
+            
+            const container = document.getElementById('letter-content-container');
+            container.innerHTML = ''; 
+            
+            letterLines.forEach(text => {
+                const p = document.createElement('p');
+                p.innerHTML = text;
+                container.appendChild(p);
+            });
+            
+            const sig = document.createElement('div');
+            sig.className = 'letter-signature';
+            sig.innerHTML = 'From：芋圆♡<br>2026.5.20';
+            container.appendChild(sig);
+        }
+
+        // 4. 点击事件与状态管理
+        let clickCount = 0;
+        let letterOverlay = document.getElementById('letter-overlay');
+
+        document.getElementById("heart").addEventListener("click", function() {
+            clickCount++;
+            if (clickCount === 1) {
+                this.style.animation = "none";
+                this.style.transform = "scale(0.8)";
+                this.style.cursor = "default";
+                this.title = ""; 
+
+                const threadContainer = document.getElementById("red-thread-container");
+                const threadPath = document.getElementById("thread-path");
+                threadContainer.style.display = "block";
+                threadPath.classList.add("draw-anim");
+
+                setTimeout(function() {
+                    threadContainer.style.display = "none";
+                    document.getElementById("reveal-area").style.display = "flex";
+                    
+                    setTimeout(function() { document.getElementById("char-left").classList.add("active"); }, 200);
+                    setTimeout(function() { document.getElementById("char-right").classList.add("active"); }, 1000);
+
+                    setTimeout(function() {
+                        document.getElementById("msg-box").classList.add("active");
+                        typeWriter();
+                    }, 3500); 
+                }, 6000); 
+
+            } else if (clickCount === 2) {
+                openLetterAnimation();
+            } else {
+                if(!letterOverlay.classList.contains('active')){
+                    showFinalLetter();
+                }
+            }
+        });
+
+        // 5. 信封开启系列动画流程
+        const animContainer = document.getElementById('envelope-anim');
+        const detailedLetter = document.getElementById('detailed-letter');
+
+        function openLetterAnimation() {
+            letterOverlay.style.display = 'flex';
+            animContainer.style.display = 'block';
+            animContainer.style.opacity = '1';
+            animContainer.classList.remove('open');
+            
+            detailedLetter.style.display = 'none';
+            detailedLetter.style.opacity = '0';
+            detailedLetter.style.transform = 'scale(0.8)';
+
+            requestAnimationFrame(() => {
+                letterOverlay.classList.add('active');
+                
+                setTimeout(() => {
+                    animContainer.classList.add('open');
+                    // 【修改】配合 CSS 时间加长，这里的等待时间调整为 3600ms (2s开盖 + 1.6s抽出的后半段)
+                    setTimeout(() => {
+                        animContainer.style.opacity = '0';
+                        animContainer.style.transform = 'scale(0.8)';
+                        
+                        setTimeout(() => {
+                            animContainer.style.display = 'none';
+                            detailedLetter.style.display = 'flex';
+                            requestAnimationFrame(() => {
+                                detailedLetter.style.opacity = '1';
+                                detailedLetter.style.transform = 'scale(1)';
+
+                                if(!letterTypeState.isTyping && !letterTypeState.isFinished) {
+                                    letterTypeState.isTyping = true;
+                                    setTimeout(typeLetterText, 600); 
+                                }
+                            });
+                        }, 800); 
+                    }, 3600);
+                }, 800);
+            });
+        }
+
+        function showFinalLetter() {
+            letterOverlay.style.display = 'flex';
+            animContainer.style.display = 'none'; 
+            detailedLetter.style.display = 'flex';
+            finishLetterTypingInstantly(); 
+            requestAnimationFrame(() => {
+                letterOverlay.classList.add('active');
+                detailedLetter.style.opacity = '1';
+                detailedLetter.style.transform = 'scale(1)';
+            });
+        }
+
+        // 6. 关闭信件 -> 触发黑屏烟花
+        document.getElementById('close-letter').addEventListener('click', function() {
+            letterOverlay.classList.remove('active');
+            detailedLetter.style.opacity = '0';
+            detailedLetter.style.transform = 'scale(0.8)';
+            finishLetterTypingInstantly();
+
+            setTimeout(() => {
+                letterOverlay.style.display = 'none';
+                
+                const fwCanvas = document.getElementById('fireworks-canvas');
+                fwCanvas.style.display = 'block';
+                void fwCanvas.offsetWidth; 
+                fwCanvas.classList.add('active');
+                
+                initFireworks();
+            }, 500);
+        });
+
+        // =======================================================
+        // 7. 多形态、慢动作的梦幻烟花引擎
+        // =======================================================
+        function initFireworks() {
+            window.requestAnimFrame = (function() {
+                return window.requestAnimationFrame || window.webkitRequestAnimationFrame || 
+                       window.mozRequestAnimationFrame || function(callback) { window.setTimeout(callback, 1000 / 60); };
+            })();
+
+            const canvas = document.getElementById('fireworks-canvas');
+            const ctx = canvas.getContext('2d');
+            let cw = window.innerWidth;
+            let ch = window.innerHeight;
+            canvas.width = cw;
+            canvas.height = ch;
+
+            let fireworks = [];
+            let particles = [];
+            let timerTotal = 120; 
+            let timerTick = 0;
+            let mousedown = false;
+            let mx, my;
+
+            const vibrantColors = [
+                'hsl(0, 100%, 70%)',   // 艳红
+                'hsl(30, 100%, 65%)',  // 橙黄
+                'hsl(60, 100%, 70%)',  // 金黄
+                'hsl(120, 100%, 70%)', // 翠绿
+                'hsl(180, 100%, 70%)', // 孔雀蓝
+                'hsl(240, 100%, 75%)', // 宝石蓝
+                'hsl(280, 100%, 70%)', // 玫瑰紫
+                'hsl(330, 100%, 75%)'  // 艳粉
+            ];
+
+            window.addEventListener('resize', function() {
+                cw = window.innerWidth; ch = window.innerHeight;
+                canvas.width = cw; canvas.height = ch;
+            });
+
+            function random(min, max) { return Math.random() * (max - min) + min; }
+            function calculateDistance(p1x, p1y, p2x, p2y) {
+                return Math.sqrt(Math.pow(p1x - p2x, 2) + Math.pow(p1y - p2y, 2));
+            }
+
+            function Firework(sx, sy, tx, ty) {
+                this.x = sx; this.y = sy;
+                this.sx = sx; this.sy = sy;
+                this.tx = tx; this.ty = ty;
+                this.distanceToTarget = calculateDistance(sx, sy, tx, ty);
+                this.distanceTraveled = 0;
+                this.coordinates = [];
+                this.coordinateCount = 3;
+                while (this.coordinateCount--) { this.coordinates.push([this.x, this.y]); }
+                this.angle = Math.atan2(ty - sy, tx - sx);
+                this.speed = 0.6; 
+                this.acceleration = 1.02; 
+                this.brightness = random(50, 70);
+                this.targetRadius = 1;
+                this.type = Math.floor(random(0, 4));
+            }
+
+            Firework.prototype.update = function(index) {
+                this.coordinates.pop();
+                this.coordinates.unshift([this.x, this.y]);
+                if (this.targetRadius < 8) { this.targetRadius += 0.3; } else { this.targetRadius = 1; }
+                this.speed *= this.acceleration;
+                let vx = Math.cos(this.angle) * this.speed;
+                let vy = Math.sin(this.angle) * this.speed;
+                this.distanceTraveled = calculateDistance(this.sx, this.sy, this.x + vx, this.y + vy);
+
+                if (this.distanceTraveled >= this.distanceToTarget) {
+                    createParticles(this.tx, this.ty, this.type);
+                    fireworks.splice(index, 1);
+                } else {
+                    this.x += vx; this.y += vy;
+                }
+            };
+
+            Firework.prototype.draw = function() {
+                ctx.beginPath();
+                ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
+                ctx.lineTo(this.x, this.y);
+                ctx.strokeStyle = 'hsl(30, 100%, ' + this.brightness + '%)'; 
+                ctx.stroke();
+            };
+
+            function Particle(x, y, colorStr) {
+                this.x = x; this.y = y;
+                this.coordinates = [];
+                this.coordinateCount = 12; 
+                while (this.coordinateCount--) { this.coordinates.push([this.x, this.y]); }
+                this.angle = random(0, Math.PI * 2);
+                this.speed = random(2, 10);
+                this.friction = 0.96; 
+                this.gravity = 0.15;  
+                this.brightness = random(50, 80);
+                this.alpha = 1;
+                this.decay = random(0.005, 0.012); 
+                this.colorStr = colorStr;
+            }
+
+            Particle.prototype.update = function(index) {
+                this.coordinates.pop();
+                this.coordinates.unshift([this.x, this.y]);
+                this.speed *= this.friction;
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed + this.gravity;
+                this.alpha -= this.decay;
+                if (this.alpha <= this.decay) { particles.splice(index, 1); }
+            };
+
+            Particle.prototype.draw = function() {
+                ctx.beginPath();
+                ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
+                ctx.lineTo(this.x, this.y);
+                ctx.strokeStyle = this.colorStr.replace(')', ', ' + this.alpha + ')').replace('rgb', 'rgba').replace('hsl', 'hsla');
+                ctx.stroke();
+            };
+
+            function createParticles(x, y, type) {
+                let explosionColors = [];
+                for(let k = 0; k < 3; k++) { 
+                    explosionColors.push(vibrantColors[Math.floor(random(0, vibrantColors.length))]);
+                }
+                
+                let particleCount;
+
+                if (type === 1) { 
+                    particleCount = 120;
+                    for (let i = 0; i < particleCount; i++) {
+                        let t = random(0, Math.PI * 2);
+                        let vx = Math.pow(Math.sin(t), 3) * 16;
+                        let vy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                        vx *= 0.35; 
+                        vy *= 0.35;
+                        
+                        let p = new Particle(x, y, explosionColors[i % explosionColors.length]);
+                        p.speed = Math.sqrt(vx*vx + vy*vy) * random(0.9, 1.1); 
+                        p.angle = Math.atan2(vy, vx);
+                        p.gravity = 0.05; 
+                        particles.push(p);
+                    }
+                } else if (type === 2) { 
+                    particleCount = 100;
+                    for (let i = 0; i < particleCount; i++) {
+                        let p = new Particle(x, y, explosionColors[i % explosionColors.length]);
+                        p.speed = random(1, 6); 
+                        p.gravity = 0.25; 
+                        p.decay = random(0.003, 0.008); 
+                        particles.push(p);
+                    }
+                } else if (type === 3) { 
+                    particleCount = 120;
+                    for (let i = 0; i < particleCount; i++) {
+                        let p = new Particle(x, y, explosionColors[i % explosionColors.length]);
+                        p.angle = (Math.PI * 2 / particleCount) * i; 
+                        p.speed = (i % 2 === 0) ? random(8, 10) : random(3, 5); 
+                        p.friction = 0.94;
+                        particles.push(p);
+                    }
+                } else { 
+                    particleCount = 180;
+                    for (let i = 0; i < particleCount; i++) {
+                        let p = new Particle(x, y, explosionColors[i % explosionColors.length]);
+                        p.speed = random(2, 14); 
+                        particles.push(p);
+                    }
+                }
+            }
+
+            function loop() {
+                requestAnimFrame(loop);
+                
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; 
+                ctx.fillRect(0, 0, cw, ch);
+                ctx.globalCompositeOperation = 'lighter';
+
+                let i = fireworks.length;
+                while (i--) { fireworks[i].draw(); fireworks[i].update(i); }
+                let j = particles.length;
+                while (j--) { particles[j].draw(); particles[j].update(j); }
+
+                if (timerTick >= timerTotal) {
+                    if (!mousedown) {
+                        const fireworksPerLaunch = Math.floor(random(3, 7)); 
+                        for (let k = 0; k < fireworksPerLaunch; k++) {
+                            const targetX = random(cw * 0.1, cw * 0.9);
+                            const targetY = random(ch * 0.1, ch * 0.6);
+                            fireworks.push(new Firework(cw / 2, ch, targetX, targetY));
+                        }
+                        timerTick = 0;
+                    }
+                } else {
+                    timerTick++;
+                }
+
+                if (mousedown) {
+                    if(timerTick >= 15) { 
+                        fireworks.push(new Firework(cw / 2, ch, mx, my));
+                        timerTick = 0;
+                    } else {
+                        timerTick++;
+                    }
+                }
+            }
+
+            canvas.addEventListener('mousemove', function(e) { mx = e.pageX; my = e.pageY; });
+            canvas.addEventListener('mousedown', function(e) { e.preventDefault(); mousedown = true; mx = e.pageX; my = e.pageY; });
+            canvas.addEventListener('mouseup', function(e) { e.preventDefault(); mousedown = false; });
+            canvas.addEventListener('touchstart', function(e) { e.preventDefault(); mousedown = true; mx = e.touches[0].pageX; my = e.touches[0].pageY; }, {passive: false});
+            canvas.addEventListener('touchmove', function(e) { e.preventDefault(); mx = e.touches[0].pageX; my = e.touches[0].pageY; }, {passive: false});
+            canvas.addEventListener('touchend', function(e) { e.preventDefault(); mousedown = false; });
+
+            loop();
+        }
+    </script>
+</body>
+</html>
