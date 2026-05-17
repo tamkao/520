@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>520 快乐 ❤</title>
     <style>
-        /* 鍩虹鏍峰紡涓庢笎鍙樿儗鏅?*/
+        /* 基础样式与渐变背景 */
         body {
             margin: 0; padding: 0; height: 100vh;
             display: flex; flex-direction: column;
@@ -16,12 +16,12 @@
             overflow: hidden; gap: 20px;
         }
 
-        /* 绾?CSS 缁樺埗鐨勮烦鍔ㄥぇ鐖卞績 */
+        /* 纯 CSS 绘制的跳动大爱心 (跳动变慢) */
         .heart {
             position: relative; width: 100px; height: 90px;
-            animation: beat 1s infinite alternate;
+            animation: beat 1.5s infinite alternate; /* 变慢 */
             z-index: 20; cursor: pointer;
-            transition: transform 1.5s ease;
+            transition: transform 2s ease; /* 变慢 */
         }
         .heart::before, .heart::after {
             content: ""; position: absolute; top: 0; width: 50px; height: 80px;
@@ -32,7 +32,7 @@
         .heart::after { left: 0; transform: rotate(45deg); transform-origin: 100% 100%; }
         @keyframes beat { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
 
-        /* ======== 鍛借繍鐨勭孩绾垮ぇ灞忓姩鐢荤壒鏁?======== */
+        /* ======== 命运的红线大屏动画特效 (绘制变慢) ======== */
         #red-thread-container {
             position: fixed; top: 50%; left: 0; width: 100vw; height: 200px;
             transform: translateY(-50%);
@@ -44,7 +44,7 @@
             stroke-dasharray: 1500; stroke-dashoffset: 1500;
         }
         .draw-anim {
-            animation: drawThread 6s ease-in-out forwards;
+            animation: drawThread 9s ease-in-out forwards; /* 从6s变慢到9s */
         }
         @keyframes drawThread {
             0% { stroke-dashoffset: 1500; opacity: 0; }
@@ -54,14 +54,14 @@
             100% { opacity: 0; stroke-dashoffset: 0; } 
         }
 
-        /* 闅愯棌鐨勬儕鍠滃寘瑁癸紙鍖呭惈鍏斿瓙鍜屾枃瀛楁锛?*/
+        /* 隐藏的惊喜包裹（包含兔子和文字框） */
         #reveal-area {
             display: none; 
             flex-direction: column; align-items: center; gap: 25px;
             width: 100%; z-index: 10;
         }
 
-        /* 涓棿鍏斿瓙鐨勫璺戝姩鐢诲尯 */
+        /* 中间兔子的对跑动画区 */
         #character-animation-container {
             position: relative; width: 290px; height: 175px;
             overflow: visible; 
@@ -77,19 +77,19 @@
             opacity: 0;
         }
 
-        /* ======== 鍏斿瓙鐩搁亣鐨勮繃娓℃晥鏋?======== */
+        /* ======== 兔子相遇的过渡效果 (入场变慢) ======== */
         #char-left {
             left: -100vw; background-position-x: left;
-            transition: left 3s ease-out, opacity 1.5s;
+            transition: left 4.5s ease-out, opacity 2.5s; /* 变慢 */
         }
         #char-right {
             right: -100vw; background-position-x: right;
-            transition: right 2.5s ease-out, opacity 1.5s;
+            transition: right 4s ease-out, opacity 2.5s; /* 变慢 */
         }
         #char-left.active { left: 0; opacity: 1; }
         #char-right.active { right: 0; opacity: 1; }
 
-        /* 搴曢儴鏂囧瓧妗?*/
+        /* 底部文字框 */
         .message-box {
             background: rgba(255, 255, 255, 0.4);
             padding: 15px 35px; border-radius: 15px;
@@ -98,7 +98,7 @@
             max-width: 80%;
             opacity: 0; 
             transform: translateY(10px);
-            transition: opacity 1.5s ease, transform 1.5s ease;
+            transition: opacity 2.5s ease, transform 2.5s ease; /* 变慢 */
             min-height: 25px; 
         }
         .message-box.active {
@@ -110,7 +110,7 @@
             line-height: 1.5; white-space: nowrap;
         }
 
-        /* 婕ぉ椋炶垶鐨勫皬蹇冨績 */
+        /* 漫天飞舞的小心心 (飘升速度变慢) */
         .floating-heart {
             position: absolute; top: 0; z-index: 1; pointer-events: none; 
         }
@@ -122,7 +122,7 @@
         }
 
         /* =========================================================
-           淇″皝鍔ㄧ敾鐗规晥
+           信封动画特效 (整体变慢)
            ========================================================= */
         #letter-overlay {
             position: fixed; inset: 0;
@@ -130,19 +130,19 @@
             background: rgba(255, 255, 255, 0.5); display: none; 
             justify-content: center; align-items: center;
             backdrop-filter: blur(8px); z-index: 1000;
-            opacity: 0; transition: opacity 0.5s ease;
+            opacity: 0; transition: opacity 1s ease; /* 变慢 */
         }
         #letter-overlay.active { opacity: 1; }
 
-        /* 淇″皝涓讳綋瀹瑰櫒 */
+        /* 信封主体容器 */
         #envelope-anim {
             position: absolute;
             width: 300px; height: 200px;
             z-index: 10;
-            transition: opacity 1s ease, transform 1s ease; 
+            transition: opacity 1.8s ease, transform 1.8s ease; /* 变慢 */
         }
 
-        /* 淇″皝鑳岄潰 (绱伆鑹茶竟妗?+ 鐧借壊搴? */
+        /* 信封背面 (紫灰色边框 + 白色底) */
         .env-back {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff;
@@ -152,16 +152,16 @@
             z-index: 1;
         }
 
-        /* 閲岄潰鐨勪俊绾?(鍒濆鐘舵€佽棌鍦ㄤ俊灏侀噷) */
+        /* 里面的信纸 (初始状态藏在信封里) */
         .env-paper {
             position: absolute; top: 10px; left: 15px; right: 15px; bottom: 10px;
             background: #fff;
             border: 1px solid #f2e8e8; border-radius: 4px;
             z-index: 2;
-            transition: transform 2s ease-in-out 1.2s; 
+            transition: transform 3s ease-in-out 1.8s; /* 弹出变慢，延迟变慢 */
         }
 
-        /* 淇″皝姝ｉ潰鐨勪笅鍗婇儴鍒嗛伄鎸?*/
+        /* 信封正面的下半部分遮挡 */
         .env-front {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 60%;
             background: #fff;
@@ -174,7 +174,7 @@
             transform: scale(1.02); 
         }
         
-        /* 宸﹀彸涓や晶鐨勭櫧鑹查伄鎸?*/
+        /* 左右两侧的白色遮挡 */
         .env-front-left {
             position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: #fff;
             clip-path: polygon(0 0, 100% 50%, 0 100%); z-index: 3;
@@ -186,7 +186,7 @@
             border-right: 5px dashed #bba4b9; box-sizing: border-box; border-radius: 0 8px 8px 0;
         }
 
-        /* 淇″皝涓婄炕鐩?*/
+        /* 信封上翻盖 */
         .env-flap {
             position: absolute; top: 0; left: 0; width: 100%; height: 55%;
             background: #fff;
@@ -196,11 +196,11 @@
             clip-path: polygon(0 0, 100% 0, 50% 100%);
             transform-origin: top;
             z-index: 4;
-            transition: transform 2s ease-in-out, z-index 0s 1s; 
+            transition: transform 3s ease-in-out, z-index 0s 1.5s; /* 翻开变慢 */
             box-sizing: border-box;
         }
 
-        /* 绾?CSS 瑙勫垯鐖卞績鍗扮珷 */
+        /* 纯 CSS 规则爱心印章 */
         .env-seal {
             position: absolute; bottom: 0px; left: 50%; 
             margin-left: -15px; 
@@ -217,7 +217,7 @@
         .env-seal::before { top: -15px; left: 0; }
         .env-seal::after { top: 0; left: 15px; }
 
-        /* 瑙﹀彂寮€鍚姩鐢绘椂鐨勭被鍚?*/
+        /* 触发开启动画时的类名 */
         #envelope-anim.open .env-flap {
             transform: rotateX(180deg);
             z-index: 0; 
@@ -226,7 +226,7 @@
             transform: translateY(-90px); 
         }
 
-        /* 璇︾粏鐨勪俊浠跺唴瀹瑰尯 */
+        /* 详细的信件内容区 */
         #detailed-letter {
             position: absolute;
             width: 85%; max-width: 500px; height: 75%; max-height: 800px;
@@ -237,7 +237,7 @@
             display: none; 
             flex-direction: column;
             opacity: 0; transform: scale(0.8);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition: opacity 1.5s ease, transform 1.5s ease; /* 变慢 */
         }
 
         .letter-title { font-size: 1.6rem; color: #d6336c; font-weight: bold; margin: 0 0 15px 0; }
@@ -245,21 +245,21 @@
             font-size: 1.05rem; color: #444; line-height: 1.8;
             overflow-y: auto; flex-grow: 1; padding-right: 10px; padding-bottom: 20px;
         }
-        /* 婊氬姩鏉＄編鍖?*/
+        /* 滚动条美化 */
         .letter-body::-webkit-scrollbar { width: 4px; }
         .letter-body::-webkit-scrollbar-thumb { background-color: #ff9a9e; border-radius: 10px; }
         
         .letter-body p { margin-top: 0; margin-bottom: 15px; text-indent: 2em; }
         .letter-signature { text-align: right; margin-top: 30px; font-weight: bold; color: #d6336c; line-height: 1.6; }
 
-        /* 鍏抽棴鎸夐挳 */
+        /* 关闭按钮 */
         #close-letter {
             position: absolute; top: 20px; right: 20px;
             font-size: 2.5rem; color: #ff4b4b; background: none; border: none; cursor: pointer; z-index: 1010;
         }
 
         /* =========================================================
-           鐑熻姳鐢诲竷瀹瑰櫒鏍峰紡
+           烟花画布容器样式
            ========================================================= */
         #fireworks-canvas {
             position: fixed;
@@ -273,7 +273,7 @@
             background-repeat: no-repeat;
             z-index: 9999; 
             opacity: 0;
-            transition: opacity 1.5s ease; 
+            transition: opacity 2s ease; /* 变慢 */
             display: none;
             cursor: pointer; 
         }
@@ -284,7 +284,7 @@
 </head>
 <body>
 
-    <div class="heart" id="heart" title="鐐规垜涓€涓嬫湁鎯婂枩鍝"></div>
+    <div class="heart" id="heart" title="点我一下有惊喜哦~"></div>
     
     <div id="red-thread-container">
         <svg viewBox="0 0 1000 200" preserveAspectRatio="none" style="width:100%; height:100%;">
@@ -327,7 +327,7 @@
     <canvas id="fireworks-canvas"></canvas>
 
     <script>
-        // 1. 漫天飘心特效
+        // 1. 漫天飘心特效 (产生频率变慢，飘落时间更长)
         let floatInterval = setInterval(function() {
             const h = document.createElement("div");
             h.className = "floating-heart";
@@ -335,33 +335,33 @@
             h.style.left = Math.random() * 100 + "vw";
             h.style.color = "rgba(255, 75, 75, 0.4)";
             h.style.fontSize = (Math.random() * 15 + 10) + "px";
-            const duration = Math.random() * 30 + 25;
+            const duration = Math.random() * 45 + 35; // 飘升时间变长，变慢
             h.style.animation = `floatUp ${duration}s linear forwards`;
             document.body.appendChild(h);
-            setTimeout(function() { h.remove(); }, 56000);
-        }, 300);
+            setTimeout(function() { h.remove(); }, 90000);
+        }, 500); // 从300ms变成500ms，产生频率变慢
 
-        // 2. 底部短句打字机特效
+        // 2. 底部短句打字机特效 (打字速度变慢)
         const textToType = "我们的第一个520₍ᐢ..ᐢ₎♡";
         let typeIndex = 0;
         function typeWriter() {
             if (typeIndex < textToType.length) {
                 document.getElementById('type-text').innerHTML += textToType.charAt(typeIndex);
                 typeIndex++;
-                setTimeout(typeWriter, 250);
+                setTimeout(typeWriter, 380); // 打字间隔变慢
             }
         }
 
-        // 3. 信件正文长文打字机配置区
+        // 3. 信件正文长文打字机配置区 
         const letterLines = [
-            "今天是2026年的5月20日，是我们一起度过的第一个520。我想借着这个特别的日子，把一直藏在心里的话和你说说。",
-            "其实，在最开始的时候，我对你更多的是一种仰慕。那些温暖的小事、认真时的样子，还有不经意流露出的温柔，都让我觉得无比踏实。",
-            "现在的我，常常会想起你说话的语气，想起你笑起来时眼角的弧度。好像只是见到你，我的心情就会莫名变得很好。",
-            "这种特别的感觉，唯独在你身上才会有。是你给我的世界带来了不一样的色彩，让许多普通的瞬间也开始闪闪发光。",
-            "我真的很幸运能遇到你。你像一份珍贵的礼物，出现在我的生命里，也给了我很多面对生活的勇气和安全感。",
-            "未来的日子里，我愿与你携手同行。无论是分享日常，还是去探索更多未知的风景，我都希望能和你并肩作伴。",
+            "今天是26年的5月20日，是我们一起度过的第一个520！我想借着这个特别的日子，把一直藏在心里的话和你说说。",
+            "其实，在最开始的时候，我对你更多的是一种仰慕。那时候的我，总忍不住想要向着你的方向靠近，一次次被你做的那些温暖的小事所打动。你对待身边人的那份真诚和细心，总能在不经意间戳中我。也许连你自己都没发觉，你认真时的样子，还有你不经意间流露出的温柔，都让我觉得无比踏实。久而久之，我的心便在不知不觉中彻底沦陷了。",
+            "现在的我，常常会不经意间想起你说话的语气，想起你笑起来时眼角的弧度，还有你偶尔疲惫时微皱的眉头。我开始不自觉地在人群中寻找你的身影，似乎光是见到你，我的心情就能莫名变得很好。你的笑容就像阳光一样，总能驱散我所有的阴霾；我好像也变成了一个容易满足的人，哪怕只是和你简单地闲聊几句，或者一次偶然的对视，那份欢喜都会在我心底停留很久，甚至成为我一整天的动力。",
+            "这种特别的感觉，唯独在你身上才会有。是你给我的世界带来了不一样的色彩，以前总觉得平淡的日子有些枯燥，但因为有你，连那些再普通不过的瞬间，都变得闪闪发光。这些细碎的日常片段，一点点拼凑成了我日复一日的欢喜与惦念。能和你在一起，是我从前不敢去想的，一切美好得就像做梦一样。",
+            "我真的很幸运能遇到你。你就像一份珍贵的礼物，出现在我的生命里。是心跳不止，是无可替代；是你让我对生活有了更多的期待，也是你让我在偶尔感到孤独的世界里，拥有了最温暖的色彩。在我遇到烦恼或者心情低落的时候，只要想到有你，好像就有了面对一切的勇气，这是你给我的独一无二的安全感。",
+            "未来的日子里，我愿与你携手同行。不管是分享日常的碎碎念，还是去探索更多未知的风景，我都希望能和你并肩作伴。我想一直陪着你，陪你走向更大的世界，看着你绽放更耀眼的光芒。",
             "真诚地，谢谢你的存在。",
-            "我喜欢你。"
+            "我喜欢你，周天铭(>ω<)/♡"
         ];
 
         let letterTypeState = {
@@ -385,18 +385,18 @@
                     currentP.innerHTML += fullText.charAt(letterTypeState.charIndex);
                     letterTypeState.charIndex++;
                     letterBodyWrap.scrollTop = letterBodyWrap.scrollHeight;
-                    letterTypeState.timer = setTimeout(typeLetterText, 60); 
+                    letterTypeState.timer = setTimeout(typeLetterText, 120); // 字符输出变慢
                 } else {
                     letterTypeState.pIndex++;
                     letterTypeState.charIndex = 0;
-                    letterTypeState.timer = setTimeout(typeLetterText, 400); 
+                    letterTypeState.timer = setTimeout(typeLetterText, 800); // 段落停顿变慢
                 }
             } else {
                 let sig = document.createElement('div');
                 sig.className = 'letter-signature';
-                sig.innerHTML = 'From：芋圆<br>2026.5.20';
+                sig.innerHTML = 'From：芋圆♡<br>2026.5.20';
                 sig.style.opacity = '0';
-                sig.style.transition = 'opacity 1.5s ease';
+                sig.style.transition = 'opacity 2s ease'; // 署名浮现变慢
                 container.appendChild(sig);
                 letterBodyWrap.scrollTop = letterBodyWrap.scrollHeight;
                 requestAnimationFrame(() => { sig.style.opacity = '1'; });
@@ -422,11 +422,11 @@
             
             const sig = document.createElement('div');
             sig.className = 'letter-signature';
-            sig.innerHTML = 'From：芋圆<br>2026.5.20';
+            sig.innerHTML = 'From：芋圆♡<br>2026.5.20';
             container.appendChild(sig);
         }
 
-        // 4. 点击事件与状态管理
+        // 4. 点击事件与状态管理 (整体流程变慢)
         let clickCount = 0;
         let letterOverlay = document.getElementById('letter-overlay');
 
@@ -447,14 +447,16 @@
                     threadContainer.style.display = "none";
                     document.getElementById("reveal-area").style.display = "flex";
                     
-                    setTimeout(function() { document.getElementById("char-left").classList.add("active"); }, 200);
-                    setTimeout(function() { document.getElementById("char-right").classList.add("active"); }, 1000);
+                    // 兔子出现变慢
+                    setTimeout(function() { document.getElementById("char-left").classList.add("active"); }, 400);
+                    setTimeout(function() { document.getElementById("char-right").classList.add("active"); }, 1800);
 
+                    // 文字框出现变慢
                     setTimeout(function() {
                         document.getElementById("msg-box").classList.add("active");
                         typeWriter();
-                    }, 3500); 
-                }, 6000); 
+                    }, 5000); 
+                }, 9000); // 等待红线画完时间变长
 
             } else if (clickCount === 2) {
                 openLetterAnimation();
@@ -465,7 +467,7 @@
             }
         });
 
-        // 5. 信封开启系列动画流程
+        // 5. 信封开启系列动画流程 (各个环节变慢)
         const animContainer = document.getElementById('envelope-anim');
         const detailedLetter = document.getElementById('detailed-letter');
 
@@ -497,12 +499,12 @@
 
                                 if(!letterTypeState.isTyping && !letterTypeState.isFinished) {
                                     letterTypeState.isTyping = true;
-                                    setTimeout(typeLetterText, 600); 
+                                    setTimeout(typeLetterText, 1000); // 开启正文打字前的停顿变慢
                                 }
                             });
-                        }, 800); 
-                    }, 3600);
-                }, 800);
+                        }, 1200); 
+                    }, 4800);
+                }, 1200);
             });
         }
 
@@ -518,7 +520,7 @@
             });
         }
 
-        // 6. 鍏抽棴淇′欢 -> 瑙﹀彂鑳屾櫙鐑熻姳
+        // 6. 关闭信件 -> 触发背景烟花
         document.getElementById('close-letter').addEventListener('click', function() {
             letterOverlay.classList.remove('active');
             detailedLetter.style.opacity = '0';
@@ -534,11 +536,10 @@
                 fwCanvas.classList.add('active');
                 
                 initFireworks();
-            }, 500);
+            }, 1000); // 关掉信件后等一会再放烟花
         });
 
-        // =======================================================
-        // 7. 澶氬舰鎬併€佹參鍔ㄤ綔鐨勬ⅵ骞荤儫鑺卞紩鎿?        // =======================================================
+        // 7. Canvas 烟花引擎 (运动速度和衰减速度变慢)
         function initFireworks() {
             window.requestAnimFrame = (function() {
                 return window.requestAnimationFrame || window.webkitRequestAnimationFrame || 
@@ -561,18 +562,21 @@
 
             let fireworks = [];
             let particles = [];
-            let timerTotal = 120; 
+            let timerTotal = 150; // 放慢自动发射烟花的频率
             let timerTick = 0;
             let mousedown = false;
             let mx, my;
             const fireworkSkyLimit = () => ch * 0.28;
 
             const vibrantColors = [
-                'hsl(0, 100%, 70%)',   // 鑹崇孩
-                'hsl(30, 100%, 65%)',  // 姗欓粍
-                'hsl(60, 100%, 70%)',  // 閲戦粍
-                'hsl(120, 100%, 70%)', // 缈犵豢
-                'hsl(180, 100%, 70%)', // 瀛旈泙钃?                'hsl(240, 100%, 75%)', // 瀹濈煶钃?                'hsl(280, 100%, 70%)', // 鐜懓绱?                'hsl(330, 100%, 75%)'  // 鑹崇矇
+                'hsl(0, 100%, 70%)',   // 艳红
+                'hsl(30, 100%, 65%)',  // 橙黄
+                'hsl(60, 100%, 70%)',  // 金黄
+                'hsl(120, 100%, 70%)', // 翠绿
+                'hsl(180, 100%, 70%)', // 孔雀蓝
+                'hsl(240, 100%, 75%)', // 宝石蓝
+                'hsl(280, 100%, 70%)', // 玫瑰紫
+                'hsl(330, 100%, 75%)'  // 艳粉
             ];
 
             window.addEventListener('resize', resizeCanvas);
@@ -592,8 +596,8 @@
                 this.coordinateCount = 3;
                 while (this.coordinateCount--) { this.coordinates.push([this.x, this.y]); }
                 this.angle = Math.atan2(ty - sy, tx - sx);
-                this.speed = 0.6; 
-                this.acceleration = 1.02; 
+                this.speed = 0.4; // 升空变慢
+                this.acceleration = 1.015; // 加速变慢
                 this.brightness = random(50, 70);
                 this.targetRadius = 1;
                 this.type = Math.floor(random(0, 4));
@@ -630,12 +634,12 @@
                 this.coordinateCount = 12; 
                 while (this.coordinateCount--) { this.coordinates.push([this.x, this.y]); }
                 this.angle = random(0, Math.PI * 2);
-                this.speed = random(2, 10);
-                this.friction = 0.96; 
-                this.gravity = 0.15;  
+                this.speed = random(1.5, 8); // 粒子速度变慢
+                this.friction = 0.97; // 摩擦力减小，滑行更远更慢
+                this.gravity = 0.1;  // 重力变小，下落更慢
                 this.brightness = random(50, 80);
                 this.alpha = 1;
-                this.decay = random(0.005, 0.012); 
+                this.decay = random(0.003, 0.009); // 消失变慢
                 this.colorStr = colorStr;
             }
 
@@ -671,22 +675,22 @@
                         let t = random(0, Math.PI * 2);
                         let vx = Math.pow(Math.sin(t), 3) * 16;
                         let vy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-                        vx *= 0.35; 
-                        vy *= 0.35;
+                        vx *= 0.25; // 减慢爱心扩散速度
+                        vy *= 0.25;
                         
                         let p = new Particle(x, y, explosionColors[i % explosionColors.length]);
                         p.speed = Math.sqrt(vx*vx + vy*vy) * random(0.9, 1.1); 
                         p.angle = Math.atan2(vy, vx);
-                        p.gravity = 0.05; 
+                        p.gravity = 0.03; 
                         particles.push(p);
                     }
                 } else if (type === 2) { 
                     particleCount = 100;
                     for (let i = 0; i < particleCount; i++) {
                         let p = new Particle(x, y, explosionColors[i % explosionColors.length]);
-                        p.speed = random(1, 6); 
-                        p.gravity = 0.25; 
-                        p.decay = random(0.003, 0.008); 
+                        p.speed = random(1, 4.5); 
+                        p.gravity = 0.15; 
+                        p.decay = random(0.002, 0.006); 
                         particles.push(p);
                     }
                 } else if (type === 3) { 
@@ -694,15 +698,15 @@
                     for (let i = 0; i < particleCount; i++) {
                         let p = new Particle(x, y, explosionColors[i % explosionColors.length]);
                         p.angle = (Math.PI * 2 / particleCount) * i; 
-                        p.speed = (i % 2 === 0) ? random(8, 10) : random(3, 5); 
-                        p.friction = 0.94;
+                        p.speed = (i % 2 === 0) ? random(6, 8) : random(2.5, 4); 
+                        p.friction = 0.95;
                         particles.push(p);
                     }
                 } else { 
                     particleCount = 180;
                     for (let i = 0; i < particleCount; i++) {
                         let p = new Particle(x, y, explosionColors[i % explosionColors.length]);
-                        p.speed = random(2, 14); 
+                        p.speed = random(1.5, 10); 
                         particles.push(p);
                     }
                 }
@@ -712,7 +716,7 @@
                 requestAnimFrame(loop);
                 
                 ctx.globalCompositeOperation = 'destination-out';
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; 
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; // 拖尾停留时间变长
                 ctx.fillRect(0, 0, cw, ch);
                 ctx.globalCompositeOperation = 'lighter';
 
@@ -723,7 +727,7 @@
 
                 if (timerTick >= timerTotal) {
                     if (!mousedown) {
-                        const fireworksPerLaunch = Math.floor(random(3, 7)); 
+                        const fireworksPerLaunch = Math.floor(random(2, 5)); // 降低每次自动发射的数量
                         for (let k = 0; k < fireworksPerLaunch; k++) {
                             const targetX = random(cw * 0.1, cw * 0.9);
                             const targetY = random(ch * 0.1, fireworkSkyLimit());
@@ -736,7 +740,7 @@
                 }
 
                 if (mousedown) {
-                    if(timerTick >= 15) { 
+                    if(timerTick >= 25) { // 点击发射的间隔也变慢
                         fireworks.push(new Firework(cw / 2, ch, mx, my));
                         timerTick = 0;
                     } else {
@@ -763,6 +767,3 @@
     </script>
 </body>
 </html>
-
-
-
